@@ -1,6 +1,6 @@
 
 import React, { useEffect } from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import { generateUUID } from '../utils/idGenerator';
 import Header from '../components/Header';
 import NoteCard from '../components/NoteCard';
 import { useLocalStorage } from '../hooks/useLocalStorage';
@@ -24,7 +24,7 @@ const Index = () => {
 
   const createNote = () => {
     const newNote: Note = {
-      id: uuidv4(),
+      id: generateUUID(),
       title: '',
       content: '',
       createdAt: new Date().toISOString(),
@@ -65,7 +65,7 @@ const Index = () => {
       const importedNotes = await importNotes(file);
       const notesWithNewIds = importedNotes.map(note => ({
         ...note,
-        id: uuidv4(),
+        id: generateUUID(),
         createdAt: note.createdAt || new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         isSelected: false,
