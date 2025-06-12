@@ -10,11 +10,11 @@
     
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#3b82f6" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="Заметки" />
-    <link rel="apple-touch-icon" href="/placeholder.svg" />
-    <link rel="manifest" href="/manifest.json" />
+    <link rel="apple-touch-icon" href="./placeholder.svg" />
+    <link rel="manifest" href="./manifest.json" />
 
     <meta property="og:title" content="Заметки - Sticky Note Scribe" />
     <meta property="og:description" content="Мобильное приложение для создания и управления заметками" />
@@ -28,11 +28,15 @@
 
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <script type="module" src="./src/main.tsx"></script>
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js')
+          const basePath = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+            ? '/sw.js' 
+            : '/sticky-note-scribe-mobile/sw.js';
+          
+          navigator.serviceWorker.register(basePath)
             .then((registration) => {
               console.log('SW registered: ', registration);
             })
