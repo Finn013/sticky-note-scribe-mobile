@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { generateUUID } from '../utils/idGenerator';
 import Header from '../components/Header';
@@ -84,12 +83,20 @@ const Index = () => {
     }
   };
 
-  const handleExportAllNotes = () => {
-    exportNotes(notes);
-    toast({
-      title: "Экспорт завершён",
-      description: "Все заметки экспортированы в JSON файл",
-    });
+  const handleExportAllNotes = async () => {
+    try {
+      await exportNotes(notes);
+      toast({
+        title: "Экспорт завершён",
+        description: "Все заметки экспортированы",
+      });
+    } catch (error) {
+      toast({
+        title: "Ошибка экспорта",
+        description: "Не удалось экспортировать заметки",
+        variant: "destructive",
+      });
+    }
   };
 
   const sortedNotes = [...notes].sort((a, b) => {

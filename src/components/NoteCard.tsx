@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Copy, Send, QrCode, Delete, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -113,6 +112,22 @@ const NoteCard: React.FC<NoteCardProps> = ({
     large: 'text-lg'
   }[note.fontSize];
 
+  const handleExportNote = async () => {
+    try {
+      await exportSingleNote(note);
+      toast({
+        title: "Экспорт завершён",
+        description: "Заметка экспортирована",
+      });
+    } catch (error) {
+      toast({
+        title: "Ошибка экспорта",
+        description: "Не удалось экспортировать заметку",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <>
       <div 
@@ -184,7 +199,7 @@ const NoteCard: React.FC<NoteCardProps> = ({
                 </div>
               </div>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => exportSingleNote(note)}>
+              <DropdownMenuItem onClick={handleExportNote}>
                 📤 Экспорт заметки
               </DropdownMenuItem>
               <DropdownMenuItem 
