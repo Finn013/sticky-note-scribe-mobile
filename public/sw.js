@@ -50,8 +50,10 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Игнорируем запросы к Chrome Extension
-  if (event.request.url.includes('chrome-extension://')) {
+  // Игнорируем запросы к Chrome Extension и внешним ресурсам
+  if (event.request.url.includes('chrome-extension://') || 
+      event.request.url.includes('retagro.com') ||
+      !event.request.url.startsWith(self.location.origin)) {
     return;
   }
 
@@ -68,8 +70,13 @@ self.addEventListener('fetch', (event) => {
           if (event.request.destination === 'document') {
             return caches.match(`${BASE_PATH}/`);
           }
+          // Для других ресурсов возвращаем пустой ответ вместо ошибки
+          return new Response('', { status: 200 });
         });
-      }
-    )
+      })
+      .catch(() => {
+        // В случае любой ошибки возвращаем пустой ответ
+        return new Response('', { status: 200 });
+      })
   );
 });
