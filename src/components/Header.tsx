@@ -51,28 +51,20 @@ const Header: React.FC<HeaderProps> = ({
         <h1 className="text-xl font-bold text-foreground">📝 Заметки</h1>
         
         <div className="flex items-center gap-2">
-          {selectedCount > 0 && (
-            <>
-              <Button onClick={onExportSelected} size="sm" variant="outline" className="gap-2">
-                <Share size={16} />
-                Отправить выбранные
-              </Button>
-              <Button onClick={onDeleteSelected} size="sm" variant="destructive" className="gap-2">
-                <Trash size={16} />
-                Удалить выбранные
-              </Button>
-            </>
-          )}
-          
           <Button onClick={onCreateNote} size="sm" className="gap-2">
             <Plus size={16} />
-            Создать
+            <span className="hidden sm:inline">Создать</span>
           </Button>
           
           <DropdownMenu open={isMenuOpen} onOpenChange={setIsMenuOpen}>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" className="relative">
                 <Menu size={16} />
+                {selectedCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    {selectedCount}
+                  </span>
+                )}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56 bg-popover">
@@ -166,6 +158,20 @@ const Header: React.FC<HeaderProps> = ({
                   />
                 </label>
               </DropdownMenuItem>
+              
+              {selectedCount > 0 && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={onExportSelected} className="text-primary">
+                    <Share size={16} className="mr-2" />
+                    Отправить выбранные ({selectedCount})
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={onDeleteSelected} className="text-destructive">
+                    <Trash size={16} className="mr-2" />
+                    Удалить выбранные ({selectedCount})
+                  </DropdownMenuItem>
+                </>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
