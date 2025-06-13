@@ -75,7 +75,7 @@ const Index = () => {
 
   const updateNote = (updatedNote: Note) => {
     setNotes(notes.map(note => 
-      note.id === updatedNote.id ? updatedNote :��note
+      note.id === updatedNote.id ? updatedNote : note
     ));
   };
 
