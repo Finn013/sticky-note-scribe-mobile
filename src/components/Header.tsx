@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Plus, Menu, Share, Trash } from 'lucide-react';
+import { Plus, Menu, Share, Trash, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -16,6 +16,7 @@ import { AppSettings } from '../types/note';
 
 interface HeaderProps {
   onCreateNote: () => void;
+  onCreateList: () => void;
   settings: AppSettings;
   onSettingsChange: (settings: Partial<AppSettings>) => void;
   onImportNotes: (file: File) => void;
@@ -26,7 +27,8 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ 
-  onCreateNote, 
+  onCreateNote,
+  onCreateList,
   settings, 
   onSettingsChange, 
   onImportNotes,
@@ -36,6 +38,7 @@ const Header: React.FC<HeaderProps> = ({
   onDeleteSelected
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
 
   const handleFileImport = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -48,14 +51,7 @@ const Header: React.FC<HeaderProps> = ({
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
       <div className="flex items-center justify-between p-4">
-        <h1 className="text-xl font-bold text-foreground">📝 Заметки</h1>
-        
         <div className="flex items-center gap-2">
-          <Button onClick={onCreateNote} size="sm" className="gap-2">
-            <Plus size={16} />
-            <span className="hidden sm:inline">Создать</span>
-          </Button>
-          
           <DropdownMenu open={isMenuOpen} onOpenChange={setIsMenuOpen}>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="relative">
@@ -67,11 +63,21 @@ const Header: React.FC<HeaderProps> = ({
                 )}
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56 bg-popover">
-              <DropdownMenuItem onClick={onCreateNote}>
-                <Plus size={16} className="mr-2" />
-                Создать заметку
-              </DropdownMenuItem>
+            <DropdownMenuContent align="start" className="w-56 bg-popover">
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>
+                  <Plus size={16} className="mr-2" />
+                  Создать
+                </DropdownMenuSubTrigger>
+                <DropdownMenuSubContent>
+                  <DropdownMenuItem onClick={onCreateNote}>
+                    📝 Заметку
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={onCreateList}>
+                    📋 Список
+                  </DropdownMenuItem>
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
               
               <DropdownMenuSeparator />
               
@@ -138,6 +144,12 @@ const Header: React.FC<HeaderProps> = ({
                   >
                     По названию
                   </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => onSettingsChange({ sortBy: 'tags' })}
+                    className={settings.sortBy === 'tags' ? 'bg-accent' : ''}
+                  >
+                    По тегам
+                  </DropdownMenuItem>
                 </DropdownMenuSubContent>
               </DropdownMenuSub>
               
@@ -172,6 +184,28 @@ const Header: React.FC<HeaderProps> = ({
                   </DropdownMenuItem>
                 </>
               )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+
+        <h1 className="text-xl font-bold text-foreground">📝 Заметки</h1>
+        
+        <div className="flex items-center gap-2">
+          <DropdownMenu open={isCreateMenuOpen} onOpenChange={setIsCreateMenuOpen}>
+            <DropdownMenuTrigger asChild>
+              <Button size="sm" className="gap-2">
+                <Plus size={16} />
+                <span className="hidden sm:inline">Создать</span>
+                <ChevronDown size={14} />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="bg-popover">
+              <DropdownMenuItem onClick={onCreateNote}>
+                📝 Заметку
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={onCreateList}>
+                📋 Список
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

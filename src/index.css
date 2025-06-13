@@ -64,7 +64,7 @@
     --secondary-foreground: 210 40% 98%;
 
     --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 75.1%;
+    --muted-foreground: 215 20.2% 85.1%;
 
     --accent: 217.2 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;
@@ -101,21 +101,55 @@
 
   /* Enhanced dark theme text contrast */
   .dark {
-    --muted-foreground: 215 20.2% 80.1%;
+    --muted-foreground: 215 20.2% 85.1%;
   }
 
   .dark .text-muted-foreground {
-    color: hsl(215 20.2% 80.1%);
+    color: hsl(215 20.2% 85.1%);
   }
 
   .dark input, 
   .dark textarea {
     color: hsl(210 40% 98%);
     background-color: hsl(217.2 32.6% 17.5%);
+    border-color: hsl(217.2 32.6% 25.5%);
   }
 
   .dark .bg-white\/50 {
-    background-color: hsl(217.2 32.6% 20.5% / 0.8);
+    background-color: hsl(217.2 32.6% 12.5% / 0.8);
+  }
+
+  .dark .bg-black\/30 {
+    background-color: hsl(217.2 32.6% 8.5% / 0.9);
+  }
+
+  /* Улучшенная контрастность для тёмных цветов заметок */
+  .dark [style*="background-color: #374151"] {
+    color: hsl(210 40% 95%) !important;
+  }
+  
+  .dark [style*="background-color: #92400e"] {
+    color: hsl(210 40% 95%) !important;
+  }
+  
+  .dark [style*="background-color: #1e3a8a"] {
+    color: hsl(210 40% 95%) !important;
+  }
+  
+  .dark [style*="background-color: #166534"] {
+    color: hsl(210 40% 95%) !important;
+  }
+  
+  .dark [style*="background-color: #be185d"] {
+    color: hsl(210 40% 95%) !important;
+  }
+  
+  .dark [style*="background-color: #6b21a8"] {
+    color: hsl(210 40% 95%) !important;
+  }
+  
+  .dark [style*="background-color: #dc2626"] {
+    color: hsl(210 40% 95%) !important;
   }
 
   /* PWA specific styles */

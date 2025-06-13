@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import { generateUUID } from '../utils/idGenerator';
 import Header from '../components/Header';
@@ -21,6 +22,24 @@ const Index = () => {
     document.documentElement.className = settings.theme;
   }, [settings.theme]);
 
+  // Миграция старых заметок для добавления новых полей
+  useEffect(() => {
+    const migratedNotes = notes.map(note => ({
+      ...note,
+      tags: note.tags || [],
+      type: note.type || 'note' as const,
+      listItems: note.listItems || undefined
+    }));
+    
+    const hasChanges = migratedNotes.some(note => 
+      !note.tags || !note.type
+    );
+    
+    if (hasChanges) {
+      setNotes(migratedNotes);
+    }
+  }, []);
+
   const createNote = () => {
     const newNote: Note = {
       id: generateUUID(),
@@ -31,13 +50,32 @@ const Index = () => {
       color: '#ffffff',
       fontSize: settings.globalFontSize,
       isSelected: false,
+      tags: [],
+      type: 'note',
     };
     setNotes([newNote, ...notes]);
   };
 
+  const createList = () => {
+    const newList: Note = {
+      id: generateUUID(),
+      title: '',
+      content: '',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      color: '#ffffff',
+      fontSize: settings.globalFontSize,
+      isSelected: false,
+      tags: [],
+      type: 'list',
+      listItems: [],
+    };
+    setNotes([newList, ...notes]);
+  };
+
   const updateNote = (updatedNote: Note) => {
     setNotes(notes.map(note => 
-      note.id === updatedNote.id ? updatedNote : note
+      note.id === updatedNote.id ? updatedNote :��note
     ));
   };
 
@@ -68,6 +106,8 @@ const Index = () => {
         createdAt: note.createdAt || new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         isSelected: false,
+        tags: note.tags || [],
+        type: note.type || 'note' as const,
       }));
       setNotes([...notesWithNewIds, ...notes]);
       toast({
@@ -102,9 +142,14 @@ const Index = () => {
   const sortedNotes = [...notes].sort((a, b) => {
     if (settings.sortBy === 'date') {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-    } else {
+    } else if (settings.sortBy === 'title') {
       return a.title.localeCompare(b.title, 'ru', { sensitivity: 'base' });
+    } else if (settings.sortBy === 'tags') {
+      const aTagString = a.tags?.join(' ') || '';
+      const bTagString = b.tags?.join(' ') || '';
+      return aTagString.localeCompare(bTagString, 'ru', { sensitivity: 'base' });
     }
+    return 0;
   });
 
   const selectedNotes = notes.filter(note => note.isSelected);
@@ -143,6 +188,7 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Header
         onCreateNote={createNote}
+        onCreateList={createList}
         settings={settings}
         onSettingsChange={updateSettings}
         onImportNotes={handleImportNotes}
@@ -155,7 +201,7 @@ const Index = () => {
       <main className="container mx-auto px-4 py-6 max-w-4xl">
         {selectedCount > 0 && (
           <div className="mb-4 p-3 bg-primary/10 rounded-lg">
-            <p className="text-sm text-primary">
+            <p className="text-sm text-primary font-medium">
               Выбрано заметок: {selectedCount}
             </p>
           </div>
@@ -168,7 +214,7 @@ const Index = () => {
               Пока нет заметок
             </h2>
             <p className="text-muted-foreground mb-6">
-              Создайте свою первую заметку, нажав кнопку "Создать"
+              Создайте свою первую заметку или список, нажав кнопку "Создать"
             </p>
           </div>
         ) : (
