@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Copy, Send, QrCode, Delete, Menu, Plus, X, Tag, Check } from 'lucide-react';
+import { Copy, Send, QrCode, Delete, Menu, Plus, X, Tag, Check, GripVertical, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
@@ -25,6 +25,7 @@ import { generateQRCodeURL } from '../utils/qrGenerator';
 import { exportSingleNote } from '../utils/exportUtils';
 import { toast } from '@/hooks/use-toast';
 import { generateUUID } from '../utils/idGenerator';
+import TagSelector from './TagSelector';
 
 interface NoteCardProps {
   note: Note;
@@ -32,6 +33,8 @@ interface NoteCardProps {
   onDelete: (id: string) => void;
   onToggleSelect: (id: string) => void;
   globalFontSize: string;
+  onReorder?: (draggedId: string, targetId: string) => void;
+  allTags: string[];
 }
 
 const colors = [
@@ -59,7 +62,9 @@ const NoteCard: React.FC<NoteCardProps> = ({
   onUpdate, 
   onDelete, 
   onToggleSelect,
-  globalFontSize 
+  globalFontSize,
+  onReorder,
+  allTags = []
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [showQR, setShowQR] = useState(false);
@@ -68,6 +73,8 @@ const NoteCard: React.FC<NoteCardProps> = ({
   const [tempTags, setTempTags] = useState(note.tags || []);
   const [newTag, setNewTag] = useState('');
   const [tempListItems, setTempListItems] = useState(note.listItems || []);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStartPos, setDragStartPos] = useState({ x: 0, y: 0 });
 
   const isDarkTheme = document.documentElement.classList.contains('dark');
   const availableColors = isDarkTheme ? darkColors : colors;
@@ -148,6 +155,12 @@ const NoteCard: React.FC<NoteCardProps> = ({
     }
   };
 
+  const addExistingTag = (tag: string) => {
+    if (!tempTags.includes(tag)) {
+      setTempTags([...tempTags, tag]);
+    }
+  };
+
   const removeTag = (tagToRemove: string) => {
     setTempTags(tempTags.filter(tag => tag !== tagToRemove));
   };
@@ -208,17 +221,88 @@ const NoteCard: React.FC<NoteCardProps> = ({
     }
   };
 
+  // Drag and Drop handlers
+  const handleDragStart = (e: React.DragEvent | React.TouchEvent) => {
+    if ('dataTransfer' in e) {
+      e.dataTransfer.setData('text/plain', note.id);
+      e.dataTransfer.effectAllowed = 'move';
+    }
+    setIsDragging(true);
+    
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+    setDragStartPos({ x: clientX, y: clientY });
+  };
+
+  const handleDragEnd = () => {
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    const draggedId = e.dataTransfer.getData('text/plain');
+    if (draggedId !== note.id && onReorder) {
+      onReorder(draggedId, note.id);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging) return;
+    const touch = e.touches[0];
+    const deltaX = Math.abs(touch.clientX - dragStartPos.x);
+    const deltaY = Math.abs(touch.clientY - dragStartPos.y);
+    
+    if (deltaX > 10 || deltaY > 10) {
+      // Продолжаем перетаскивание
+      e.preventDefault();
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (!isDragging) return;
+    setIsDragging(false);
+    
+    const touch = e.changedTouches[0];
+    const element = document.elementFromPoint(touch.clientX, touch.clientY);
+    const targetCard = element?.closest('[data-note-id]');
+    
+    if (targetCard && onReorder) {
+      const targetId = targetCard.getAttribute('data-note-id');
+      if (targetId && targetId !== note.id) {
+        onReorder(note.id, targetId);
+      }
+    }
+  };
+
+  const availableTags = allTags.filter(tag => !tempTags.includes(tag));
+
   return (
     <>
       <div 
+        data-note-id={note.id}
         className={`rounded-lg border shadow-sm transition-all duration-200 hover:shadow-md ${
           note.isSelected ? 'ring-2 ring-primary' : ''
-        }`}
+        } ${isDragging ? 'opacity-50 scale-95' : ''}`}
         style={{ backgroundColor: note.color }}
+        onDrop={handleDrop}
+        onDragOver={handleDragOver}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-3 border-b bg-white/50 dark:bg-black/30 rounded-t-lg">
+        <div 
+          className="flex items-center justify-between p-3 border-b bg-white/50 dark:bg-black/30 rounded-t-lg cursor-move"
+          draggable={!isEditing}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+          onTouchStart={handleDragStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
           <div className="flex items-center gap-2 flex-1">
+            <GripVertical size={16} className="text-muted-foreground" />
             <div className="scale-50">
               <Checkbox
                 checked={note.isSelected}
@@ -254,6 +338,12 @@ const NoteCard: React.FC<NoteCardProps> = ({
                     <Button onClick={addTag} size="sm" className="h-6 w-6 p-0">
                       <Plus size={12} />
                     </Button>
+                    {availableTags.length > 0 && (
+                      <TagSelector 
+                        availableTags={availableTags}
+                        onSelectTag={addExistingTag}
+                      />
+                    )}
                   </div>
                 </div>
               </div>
@@ -285,7 +375,7 @@ const NoteCard: React.FC<NoteCardProps> = ({
                 <Menu size={16} />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="bg-popover">
+            <DropdownMenuContent align="end" side="bottom" className="bg-popover w-48">
               <DropdownMenuItem onClick={handleCopy}>
                 <Copy size={16} className="mr-2" />
                 Копировать
@@ -303,7 +393,7 @@ const NoteCard: React.FC<NoteCardProps> = ({
                 <DropdownMenuSubTrigger>
                   🔤 Размер шрифта
                 </DropdownMenuSubTrigger>
-                <DropdownMenuSubContent>
+                <DropdownMenuSubContent side="left" className="w-32">
                   <DropdownMenuItem
                     onClick={() => handleFontSizeChange('small')}
                     className={note.fontSize === 'small' ? 'bg-accent' : ''}

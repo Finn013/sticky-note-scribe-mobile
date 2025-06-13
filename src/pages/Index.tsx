@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { generateUUID } from '../utils/idGenerator';
 import Header from '../components/Header';
@@ -93,6 +92,19 @@ const Index = () => {
     ));
   };
 
+  const handleReorderNotes = (draggedId: string, targetId: string) => {
+    const draggedIndex = notes.findIndex(note => note.id === draggedId);
+    const targetIndex = notes.findIndex(note => note.id === targetId);
+    
+    if (draggedIndex === -1 || targetIndex === -1) return;
+    
+    const newNotes = [...notes];
+    const [draggedNote] = newNotes.splice(draggedIndex, 1);
+    newNotes.splice(targetIndex, 0, draggedNote);
+    
+    setNotes(newNotes);
+  };
+
   const updateSettings = (newSettings: Partial<AppSettings>) => {
     setSettings({ ...settings, ...newSettings });
   };
@@ -139,7 +151,8 @@ const Index = () => {
     }
   };
 
-  const sortedNotes = [...notes].sort((a, b) => {
+  // Сортировка применяется только при нажатии кнопки сортировки
+  const sortedNotes = settings.sortBy === 'manual' ? notes : [...notes].sort((a, b) => {
     if (settings.sortBy === 'date') {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     } else if (settings.sortBy === 'title') {
@@ -154,6 +167,9 @@ const Index = () => {
 
   const selectedNotes = notes.filter(note => note.isSelected);
   const selectedCount = selectedNotes.length;
+
+  // Получаем все уникальные теги
+  const allTags = Array.from(new Set(notes.flatMap(note => note.tags || [])));
 
   const handleExportSelected = async () => {
     if (selectedNotes.length === 0) return;
@@ -226,7 +242,9 @@ const Index = () => {
                 onUpdate={updateNote}
                 onDelete={deleteNote}
                 onToggleSelect={toggleSelectNote}
+                onReorder={handleReorderNotes}
                 globalFontSize={settings.globalFontSize}
+                allTags={allTags}
               />
             ))}
           </div>

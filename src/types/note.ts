@@ -23,5 +23,5 @@ export interface ListItem {
 export interface AppSettings {
   theme: 'light' | 'dark';
   globalFontSize: 'small' | 'medium' | 'large';
-  sortBy: 'date' | 'title' | 'tags';
+  sortBy: 'date' | 'title' | 'tags' | 'manual';
 }
