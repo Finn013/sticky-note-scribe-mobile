@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Copy, Send, QrCode, Delete, Menu, Plus, X, Tag, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -304,7 +303,7 @@ const NoteCard: React.FC<NoteCardProps> = ({
                 <DropdownMenuSubTrigger>
                   🔤 Размер шрифта
                 </DropdownMenuSubTrigger>
-                <DropdownMenuSubContent side="left" align="center">
+                <DropdownMenuSubContent align="center">
                   <DropdownMenuItem
                     onClick={() => handleFontSizeChange('small')}
                     className={note.fontSize === 'small' ? 'bg-accent' : ''}
