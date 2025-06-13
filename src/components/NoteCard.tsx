@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Copy, Send, QrCode, Delete, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -10,6 +11,9 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
 } from '@/components/ui/dropdown-menu';
 import {
   Dialog,
@@ -99,11 +103,8 @@ const NoteCard: React.FC<NoteCardProps> = ({
     onUpdate({ ...note, color });
   };
 
-  const handleFontSizeChange = () => {
-    const sizes = ['small', 'medium', 'large'] as const;
-    const currentIndex = sizes.indexOf(note.fontSize);
-    const nextSize = sizes[(currentIndex + 1) % sizes.length];
-    onUpdate({ ...note, fontSize: nextSize });
+  const handleFontSizeChange = (fontSize: 'small' | 'medium' | 'large') => {
+    onUpdate({ ...note, fontSize });
   };
 
   const fontSizeClass = {
@@ -139,10 +140,12 @@ const NoteCard: React.FC<NoteCardProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between p-3 border-b bg-white/50 rounded-t-lg">
           <div className="flex items-center gap-2 flex-1">
-            <Checkbox
-              checked={note.isSelected}
-              onCheckedChange={() => onToggleSelect(note.id)}
-            />
+            <div className="scale-75">
+              <Checkbox
+                checked={note.isSelected}
+                onCheckedChange={() => onToggleSelect(note.id)}
+              />
+            </div>
             {isEditing ? (
               <Input
                 value={tempTitle}
@@ -179,9 +182,33 @@ const NoteCard: React.FC<NoteCardProps> = ({
                 <QrCode size={16} className="mr-2" />
                 QR-код
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleFontSizeChange}>
-                🔤 Размер шрифта
-              </DropdownMenuItem>
+              
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>
+                  🔤 Размер шрифта
+                </DropdownMenuSubTrigger>
+                <DropdownMenuSubContent>
+                  <DropdownMenuItem
+                    onClick={() => handleFontSizeChange('small')}
+                    className={note.fontSize === 'small' ? 'bg-accent' : ''}
+                  >
+                    Маленький
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => handleFontSizeChange('medium')}
+                    className={note.fontSize === 'medium' ? 'bg-accent' : ''}
+                  >
+                    Средний
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => handleFontSizeChange('large')}
+                    className={note.fontSize === 'large' ? 'bg-accent' : ''}
+                  >
+                    Большой
+                  </DropdownMenuItem>
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
+              
               <DropdownMenuSeparator />
               <div className="px-2 py-1">
                 <div className="text-sm text-muted-foreground mb-1">Цвет заметки:</div>
@@ -221,7 +248,8 @@ const NoteCard: React.FC<NoteCardProps> = ({
                 value={tempContent}
                 onChange={(e) => setTempContent(e.target.value)}
                 placeholder="Содержимое заметки..."
-                className={`min-h-[100px] resize-none ${fontSizeClass}`}
+                className={`min-h-[200px] max-h-[400px] resize-y ${fontSizeClass}`}
+                rows={8}
               />
               <div className="flex gap-2">
                 <Button onClick={handleSave} size="sm">
@@ -234,7 +262,7 @@ const NoteCard: React.FC<NoteCardProps> = ({
             </div>
           ) : (
             <div 
-              className={`whitespace-pre-wrap cursor-pointer min-h-[60px] ${fontSizeClass}`}
+              className={`whitespace-pre-wrap cursor-pointer min-h-[60px] max-h-[200px] overflow-y-auto ${fontSizeClass}`}
               onClick={() => setIsEditing(true)}
             >
               {note.content || 'Нажмите для редактирования...'}

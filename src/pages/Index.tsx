@@ -107,7 +107,37 @@ const Index = () => {
     }
   });
 
-  const selectedCount = notes.filter(note => note.isSelected).length;
+  const selectedNotes = notes.filter(note => note.isSelected);
+  const selectedCount = selectedNotes.length;
+
+  const handleExportSelected = async () => {
+    if (selectedNotes.length === 0) return;
+    
+    try {
+      await exportNotes(selectedNotes, `selected_notes_${selectedNotes.length}.json`);
+      toast({
+        title: "Экспорт завершён",
+        description: `Экспортировано заметок: ${selectedNotes.length}`,
+      });
+    } catch (error) {
+      toast({
+        title: "Ошибка экспорта",
+        description: "Не удалось экспортировать выбранные заметки",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDeleteSelected = () => {
+    if (selectedNotes.length === 0) return;
+    
+    const updatedNotes = notes.filter(note => !note.isSelected);
+    setNotes(updatedNotes);
+    toast({
+      title: "Заметки удалены",
+      description: `Удалено заметок: ${selectedNotes.length}`,
+    });
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -117,6 +147,9 @@ const Index = () => {
         onSettingsChange={updateSettings}
         onImportNotes={handleImportNotes}
         onExportAllNotes={handleExportAllNotes}
+        selectedCount={selectedCount}
+        onExportSelected={handleExportSelected}
+        onDeleteSelected={handleDeleteSelected}
       />
       
       <main className="container mx-auto px-4 py-6 max-w-4xl">
