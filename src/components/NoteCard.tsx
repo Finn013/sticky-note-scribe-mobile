@@ -393,7 +393,7 @@ const NoteCard: React.FC<NoteCardProps> = ({
                 <DropdownMenuSubTrigger>
                   🔤 Размер шрифта
                 </DropdownMenuSubTrigger>
-                <DropdownMenuSubContent side="left" className="w-32">
+                <DropdownMenuSubContent className="w-32">
                   <DropdownMenuItem
                     onClick={() => handleFontSizeChange('small')}
                     className={note.fontSize === 'small' ? 'bg-accent' : ''}
