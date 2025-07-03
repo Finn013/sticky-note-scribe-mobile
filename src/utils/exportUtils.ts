@@ -1,9 +1,28 @@
 
 import { Note } from '../types/note';
 
+// Интерфейс для Android моста
+declare global {
+  interface Window {
+    Android?: {
+      shareText: (text: string) => void;
+    };
+  }
+}
+
 export const exportNotes = async (notes: Note[], fileName: string = 'notes.json') => {
   const dataStr = JSON.stringify(notes, null, 2);
   const blob = new Blob([dataStr], { type: 'application/json' });
+  
+  // Проверяем наличие Android моста
+  if (window.Android && typeof window.Android.shareText === 'function') {
+    try {
+      window.Android.shareText(dataStr);
+      return;
+    } catch (error) {
+      console.log('Ошибка Android моста, используем обычный экспорт');
+    }
+  }
   
   // Проверяем поддержку Web Share API для мобильных устройств
   if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([blob], fileName)] })) {

@@ -247,6 +247,15 @@
       --radix-dropdown-menu-content-transform-origin: right center;
     }
   }
+  
+  /* Фиксация layout при открытии меню */
+  .container {
+    transition: none !important;
+  }
+  
+  main {
+    transition: none !important;
+  }
 }
 
 /* Custom animations */
