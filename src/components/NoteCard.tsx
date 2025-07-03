@@ -284,9 +284,11 @@ const NoteCard: React.FC<NoteCardProps> = ({
     <>
       <div 
         data-note-id={note.id}
-        className={`rounded-lg border shadow-sm transition-all duration-200 hover:shadow-md ${
+        className={`rounded-lg border-2 shadow-sm transition-all duration-200 hover:shadow-md ${
           note.isSelected ? 'ring-2 ring-primary' : ''
-        } ${isDragging ? 'opacity-50 scale-95' : ''}`}
+        } ${isDragging ? 'opacity-50 scale-95' : ''} ${
+          note.type === 'list' ? 'border-green-500' : 'border-blue-500'
+        }`}
         style={{ backgroundColor: note.color }}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
@@ -532,7 +534,10 @@ const NoteCard: React.FC<NoteCardProps> = ({
           </DialogHeader>
           <div className="flex flex-col items-center space-y-4">
             <img 
-              src={generateQRCodeURL(`${note.title}\n\n${note.content}`)}
+              src={generateQRCodeURL(note.type === 'list' && note.listItems 
+                ? `${note.title}\n\n${note.listItems.map(item => `${item.completed ? '✓' : '○'} ${item.text}`).join('\n')}`
+                : `${note.title}\n\n${note.content}`
+              )}
               alt="QR Code"
               className="border rounded"
             />
