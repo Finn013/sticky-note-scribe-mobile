@@ -225,6 +225,31 @@
     min-width: 44px;
   }
 
+  /* Глобальный размер шрифта */
+  .global-font-small {
+    font-size: 0.875rem;
+  }
+  
+  .global-font-medium {
+    font-size: 1rem;
+  }
+  
+  .global-font-large {
+    font-size: 1.125rem;
+  }
+  
+  .global-font-small * {
+    font-size: inherit;
+  }
+  
+  .global-font-medium * {
+    font-size: inherit;
+  }
+  
+  .global-font-large * {
+    font-size: inherit;
+  }
+
   /* Drag and drop styles */
   .cursor-move {
     cursor: move;

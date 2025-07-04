@@ -284,7 +284,7 @@ const NoteCard: React.FC<NoteCardProps> = ({
     <>
       <div 
         data-note-id={note.id}
-        className={`rounded-lg border-2 shadow-sm transition-all duration-200 hover:shadow-md ${
+        className={`rounded-lg border-4 shadow-sm transition-all duration-200 hover:shadow-md ${
           note.isSelected ? 'ring-2 ring-primary' : ''
         } ${isDragging ? 'opacity-50 scale-95' : ''} ${
           note.type === 'list' ? 'border-green-500' : 'border-blue-500'
@@ -295,7 +295,7 @@ const NoteCard: React.FC<NoteCardProps> = ({
       >
         {/* Header */}
         <div 
-          className="flex items-center justify-between p-3 border-b bg-white/50 dark:bg-black/30 rounded-t-lg cursor-move"
+          className="flex items-center justify-between p-3 border-b-4 bg-white/50 dark:bg-black/30 rounded-t-lg cursor-move"
           draggable={!isEditing}
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}

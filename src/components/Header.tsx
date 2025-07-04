@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Plus, Menu, Share, Trash, ChevronDown } from 'lucide-react';
+import { Plus, Menu, Share, Trash, ChevronDown, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -12,6 +12,12 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { AppSettings } from '../types/note';
 
 interface HeaderProps {
@@ -39,6 +45,7 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
 
   const handleFileImport = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -184,6 +191,13 @@ const Header: React.FC<HeaderProps> = ({
                   </DropdownMenuItem>
                 </>
               )}
+              
+              <DropdownMenuSeparator />
+              
+              <DropdownMenuItem onClick={() => setShowInfo(true)}>
+                <Info size={16} className="mr-2" />
+                ℹ️ Info
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -210,6 +224,33 @@ const Header: React.FC<HeaderProps> = ({
           </DropdownMenu>
         </div>
       </div>
+      
+      {/* Info Dialog */}
+      <Dialog open={showInfo} onOpenChange={setShowInfo}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>📝 Информация о приложении</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <h3 className="font-semibold text-sm text-muted-foreground">Технологии:</h3>
+              <p className="text-sm">React, TypeScript, Tailwind CSS, Vite, Shadcn/ui</p>
+            </div>
+            <div>
+              <h3 className="font-semibold text-sm text-muted-foreground">Языки программирования:</h3>
+              <p className="text-sm">TypeScript, JavaScript, HTML, CSS</p>
+            </div>
+            <div>
+              <h3 className="font-semibold text-sm text-muted-foreground">Инструменты:</h3>
+              <p className="text-sm">Lucide Icons, Radix UI, LocalStorage API</p>
+            </div>
+            <div>
+              <h3 className="font-semibold text-sm text-muted-foreground">Разработчик:</h3>
+              <p className="text-sm font-medium">Nott_013</p>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </header>
   );
 };

@@ -201,7 +201,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className={`min-h-screen bg-background global-font-${settings.globalFontSize}`}>
       <Header
         onCreateNote={createNote}
         onCreateList={createList}
