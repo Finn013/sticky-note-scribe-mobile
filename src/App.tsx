@@ -1,31 +1,44 @@
 
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useEffect } from 'react';
+import Index from './pages/Index';
+import NotFound from './pages/NotFound';
+import { Toaster } from '@/components/ui/toaster';
+import { useLocalStorage } from './hooks/useLocalStorage';
+import { AppSettings } from './types/note';
+import './App.css';
 
-const queryClient = new QueryClient();
+function App() {
+  const [settings] = useLocalStorage<AppSettings>('app-settings', {
+    theme: 'light',
+    globalFontSize: 'medium',
+    sortBy: 'date'
+  });
 
-// Определяем basename для роутера
-const basename = import.meta.env.MODE === 'production' ? '/sticky-note-scribe-mobile' : '';
+  useEffect(() => {
+    // Apply theme
+    if (settings.theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter basename={basename}>
+    // Apply global font size scaling to document body
+    document.body.className = document.body.className.replace(/global-font-\w+/, '');
+    document.body.classList.add(`global-font-${settings.globalFontSize}`);
+  }, [settings.theme, settings.globalFontSize]);
+
+  return (
+    <Router>
+      <div className="min-h-screen bg-background">
         <Routes>
           <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+        <Toaster />
+      </div>
+    </Router>
+  );
+}
 
 export default App;

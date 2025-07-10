@@ -79,6 +79,19 @@ const NoteCard: React.FC<NoteCardProps> = ({
   const isDarkTheme = document.documentElement.classList.contains('dark');
   const availableColors = isDarkTheme ? darkColors : colors;
 
+  // Format creation date
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleString('ru-RU', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    });
+  };
+
   const handleSave = () => {
     const updatedNote = {
       ...note,
@@ -533,10 +546,29 @@ const NoteCard: React.FC<NoteCardProps> = ({
           )}
         </div>
 
-        {/* Simple colored bottom strip */}
-        <div className={`h-2 rounded-b-lg ${
+        {/* Bottom information strip */}
+        <div className={`px-3 py-2 rounded-b-lg text-white text-xs flex items-center gap-2 ${
           note.type === 'list' ? 'bg-green-500' : 'bg-blue-500'
-        }`}></div>
+        }`}>
+          <span className="text-sm">
+            {note.type === 'list' ? '📋' : '📝'}
+          </span>
+          <span className="font-medium">
+            {note.type === 'list' ? 'Список' : 'Заметка'}
+          </span>
+          <span>•</span>
+          <span>
+            Создано: {formatDate(note.createdAt)}
+          </span>
+          {note.updatedAt !== note.createdAt && (
+            <>
+              <span>•</span>
+              <span>
+                Изменено: {formatDate(note.updatedAt)}
+              </span>
+            </>
+          )}
+        </div>
       </div>
 
       {/* QR Code Dialog */}
