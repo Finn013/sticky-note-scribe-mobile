@@ -28,8 +28,11 @@ function App() {
     document.body.classList.add(`global-font-${settings.globalFontSize}`);
   }, [settings.theme, settings.globalFontSize]);
 
+  // Определяем базовый путь для роутера
+  const basename = import.meta.env.PROD ? '/sticky-note-scribe-mobile' : '';
+
   return (
-    <Router>
+    <Router basename={basename}>
       <div className="min-h-screen bg-background">
         <Routes>
           <Route path="/" element={<Index />} />
