@@ -520,9 +520,32 @@ const NoteCard: React.FC<NoteCardProps> = ({
           )}
         </div>
 
-        {/* Footer */}
-        <div className="px-3 pb-2 text-xs text-muted-foreground">
-          {note.type === 'list' ? '📋 Список' : '📝 Заметка'} • Создано: {new Date(note.createdAt).toLocaleString('ru')}
+        {/* Footer with colored line */}
+        <div className={`px-3 pb-2 pt-2 border-t-4 ${
+          note.type === 'list' ? 'border-t-green-500 bg-green-50 dark:bg-green-900/20' : 'border-t-blue-500 bg-blue-50 dark:bg-blue-900/20'
+        }`}>
+          <div className="flex items-center gap-2 text-xs">
+            <div className={`p-1 rounded ${
+              note.type === 'list' ? 'bg-green-500' : 'bg-blue-500'
+            }`}>
+              {note.type === 'list' ? (
+                <Check size={14} className="text-white" />
+              ) : (
+                <Copy size={14} className="text-white" />
+              )}
+            </div>
+            <span className={`font-medium ${
+              note.type === 'list' ? 'text-green-700 dark:text-green-300' : 'text-blue-700 dark:text-blue-300'
+            }`}>
+              {note.type === 'list' ? '📋 Список' : '📝 Заметка'}
+            </span>
+            <span className="text-muted-foreground">•</span>
+            <span className={`${
+              note.type === 'list' ? 'text-green-600 dark:text-green-400' : 'text-blue-600 dark:text-blue-400'
+            }`}>
+              Создано: {new Date(note.createdAt).toLocaleString('ru')}
+            </span>
+          </div>
         </div>
       </div>
 

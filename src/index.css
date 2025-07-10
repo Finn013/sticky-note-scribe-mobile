@@ -225,9 +225,9 @@
     min-width: 44px;
   }
 
-  /* Глобальный размер шрифта */
+  /* Глобальный размер шрифта - влияет на весь интерфейс */
   .global-font-small {
-    font-size: 0.875rem;
+    font-size: 0.8rem;
   }
   
   .global-font-medium {
@@ -235,19 +235,60 @@
   }
   
   .global-font-large {
-    font-size: 1.125rem;
+    font-size: 1.25rem;
   }
   
-  .global-font-small * {
-    font-size: inherit;
+  /* Глобальные стили для каждого размера шрифта */
+  .global-font-small {
+    --global-scale: 0.85;
   }
   
-  .global-font-medium * {
-    font-size: inherit;
+  .global-font-medium {
+    --global-scale: 1;
   }
   
-  .global-font-large * {
-    font-size: inherit;
+  .global-font-large {
+    --global-scale: 1.2;
+  }
+  
+  .global-font-small *,
+  .global-font-small button,
+  .global-font-small input,
+  .global-font-small textarea,
+  .global-font-small [role="button"] {
+    font-size: calc(1rem * var(--global-scale)) !important;
+    padding: calc(0.5rem * var(--global-scale)) calc(1rem * var(--global-scale)) !important;
+    min-height: calc(44px * var(--global-scale)) !important;
+    border-radius: calc(0.375rem * var(--global-scale)) !important;
+  }
+  
+  .global-font-medium *,
+  .global-font-medium button,
+  .global-font-medium input,
+  .global-font-medium textarea,
+  .global-font-medium [role="button"] {
+    font-size: calc(1rem * var(--global-scale)) !important;
+    padding: calc(0.5rem * var(--global-scale)) calc(1rem * var(--global-scale)) !important;
+    min-height: calc(44px * var(--global-scale)) !important;
+    border-radius: calc(0.375rem * var(--global-scale)) !important;
+  }
+  
+  .global-font-large *,
+  .global-font-large button,
+  .global-font-large input,
+  .global-font-large textarea,
+  .global-font-large [role="button"] {
+    font-size: calc(1rem * var(--global-scale)) !important;
+    padding: calc(0.5rem * var(--global-scale)) calc(1rem * var(--global-scale)) !important;
+    min-height: calc(44px * var(--global-scale)) !important;
+    border-radius: calc(0.375rem * var(--global-scale)) !important;
+  }
+
+  /* Исключения для мелких элементов */
+  .global-font-small .scale-50,
+  .global-font-medium .scale-50,
+  .global-font-large .scale-50 {
+    transform: scale(0.5) !important;
   }
 
   /* Drag and drop styles */

@@ -9,6 +9,8 @@
   "background_color": "#ffffff",
   "theme_color": "#3b82f6",
   "orientation": "portrait",
+  "prefer_related_applications": false,
+  "cache_control": "no-cache",
   "icons": [
     {
       "src": "./placeholder.svg",
@@ -24,5 +26,6 @@
     }
   ],
   "categories": ["productivity", "utilities"],
-  "lang": "ru"
+  "lang": "ru",
+  "offline_enabled": true
 }

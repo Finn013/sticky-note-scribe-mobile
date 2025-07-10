@@ -1,7 +1,8 @@
 
 import React, { useState } from 'react';
-import { Plus, Menu, Share, Trash, ChevronDown, Info } from 'lucide-react';
+import { Plus, Menu, Share, Trash, ChevronDown, Info, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,6 +20,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { AppSettings } from '../types/note';
+import { toast } from '@/hooks/use-toast';
 
 interface HeaderProps {
   onCreateNote: () => void;
@@ -46,6 +48,8 @@ const Header: React.FC<HeaderProps> = ({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
+  const [showUpdateDialog, setShowUpdateDialog] = useState(false);
+  const [updateCode, setUpdateCode] = useState('');
 
   const handleFileImport = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -53,6 +57,33 @@ const Header: React.FC<HeaderProps> = ({
       onImportNotes(file);
       event.target.value = '';
     }
+  };
+
+  const handleForceUpdate = () => {
+    if (updateCode === 'Nott_013') {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(registrations => {
+          registrations.forEach(registration => {
+            registration.unregister();
+          });
+          window.location.reload();
+        });
+      } else {
+        window.location.reload();
+      }
+      toast({
+        title: "Обновление",
+        description: "Приложение обновляется...",
+      });
+    } else {
+      toast({
+        title: "Неверный код",
+        description: "Введён неправильный код доступа",
+        variant: "destructive",
+      });
+    }
+    setUpdateCode('');
+    setShowUpdateDialog(false);
   };
 
   return (
@@ -194,6 +225,11 @@ const Header: React.FC<HeaderProps> = ({
               
               <DropdownMenuSeparator />
               
+              <DropdownMenuItem onClick={() => setShowUpdateDialog(true)}>
+                <RotateCcw size={16} className="mr-2" />
+                🔄 Обновить приложение
+              </DropdownMenuItem>
+              
               <DropdownMenuItem onClick={() => setShowInfo(true)}>
                 <Info size={16} className="mr-2" />
                 ℹ️ Info
@@ -247,6 +283,42 @@ const Header: React.FC<HeaderProps> = ({
             <div>
               <h3 className="font-semibold text-sm text-muted-foreground">Разработчик:</h3>
               <p className="text-sm font-medium">Nott_013</p>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Update Dialog */}
+      <Dialog open={showUpdateDialog} onOpenChange={setShowUpdateDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>🔄 Обновление приложения</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Введите код доступа для принудительного обновления приложения из интернета:
+            </p>
+            <Input
+              type="password"
+              value={updateCode}
+              onChange={(e) => setUpdateCode(e.target.value)}
+              placeholder="Код доступа"
+              onKeyPress={(e) => e.key === 'Enter' && handleForceUpdate()}
+            />
+            <div className="flex gap-2">
+              <Button onClick={handleForceUpdate} className="flex-1">
+                Обновить
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  setShowUpdateDialog(false);
+                  setUpdateCode('');
+                }}
+                className="flex-1"
+              >
+                Отмена
+              </Button>
             </div>
           </div>
         </DialogContent>
