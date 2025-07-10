@@ -1,6 +1,6 @@
 
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { useEffect } from 'react';
 import Index from './pages/Index';
 import NotFound from './pages/NotFound';
 import { Toaster } from '@/components/ui/toaster';
