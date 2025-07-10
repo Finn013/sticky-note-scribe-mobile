@@ -48,7 +48,6 @@ const Header: React.FC<HeaderProps> = ({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
-  const [showUpdateDialog, setShowUpdateDialog] = useState(false);
   const [updateCode, setUpdateCode] = useState('');
 
   const handleFileImport = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -83,7 +82,6 @@ const Header: React.FC<HeaderProps> = ({
       });
     }
     setUpdateCode('');
-    setShowUpdateDialog(false);
   };
 
   return (
@@ -225,11 +223,6 @@ const Header: React.FC<HeaderProps> = ({
               
               <DropdownMenuSeparator />
               
-              <DropdownMenuItem onClick={() => setShowUpdateDialog(true)}>
-                <RotateCcw size={16} className="mr-2" />
-                🔄 Обновить приложение
-              </DropdownMenuItem>
-              
               <DropdownMenuItem onClick={() => setShowInfo(true)}>
                 <Info size={16} className="mr-2" />
                 ℹ️ Info
@@ -261,7 +254,7 @@ const Header: React.FC<HeaderProps> = ({
         </div>
       </div>
       
-      {/* Info Dialog */}
+      {/* Info Dialog with Update Button */}
       <Dialog open={showInfo} onOpenChange={setShowInfo}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
@@ -284,40 +277,23 @@ const Header: React.FC<HeaderProps> = ({
               <h3 className="font-semibold text-sm text-muted-foreground">Разработчик:</h3>
               <p className="text-sm font-medium">Nott_013</p>
             </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-      
-      {/* Update Dialog */}
-      <Dialog open={showUpdateDialog} onOpenChange={setShowUpdateDialog}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>🔄 Обновление приложения</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">
-              Введите код доступа для принудительного обновления приложения из интернета:
-            </p>
-            <Input
-              type="password"
-              value={updateCode}
-              onChange={(e) => setUpdateCode(e.target.value)}
-              placeholder="Код доступа"
-              onKeyPress={(e) => e.key === 'Enter' && handleForceUpdate()}
-            />
-            <div className="flex gap-2">
-              <Button onClick={handleForceUpdate} className="flex-1">
+            
+            <div className="border-t pt-4">
+              <h3 className="font-semibold text-sm text-muted-foreground mb-2">🔄 Обновление приложения:</h3>
+              <p className="text-xs text-muted-foreground mb-2">
+                Введите код доступа для принудительного обновления приложения из интернета:
+              </p>
+              <Input
+                type="password"
+                value={updateCode}
+                onChange={(e) => setUpdateCode(e.target.value)}
+                placeholder="Код доступа"
+                onKeyPress={(e) => e.key === 'Enter' && handleForceUpdate()}
+                className="mb-2"
+              />
+              <Button onClick={handleForceUpdate} className="w-full" size="sm">
+                <RotateCcw size={16} className="mr-2" />
                 Обновить
-              </Button>
-              <Button 
-                variant="outline" 
-                onClick={() => {
-                  setShowUpdateDialog(false);
-                  setUpdateCode('');
-                }}
-                className="flex-1"
-              >
-                Отмена
               </Button>
             </div>
           </div>

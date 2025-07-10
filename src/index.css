@@ -225,70 +225,82 @@
     min-width: 44px;
   }
 
-  /* Глобальный размер шрифта - влияет на весь интерфейс */
+  /* Global scaling system - affects ENTIRE interface */
   .global-font-small {
-    font-size: 0.8rem;
+    --scale-factor: 0.85;
   }
   
   .global-font-medium {
-    font-size: 1rem;
+    --scale-factor: 1;
   }
   
   .global-font-large {
-    font-size: 1.25rem;
+    --scale-factor: 1.2;
   }
   
-  /* Глобальные стили для каждого размера шрифта */
-  .global-font-small {
-    --global-scale: 0.85;
+  /* Apply scaling to ALL elements */
+  .global-font-small,
+  .global-font-small * {
+    font-size: calc(1rem * var(--scale-factor));
+    padding: calc(0.5rem * var(--scale-factor)) calc(1rem * var(--scale-factor));
+    margin: calc(0.25rem * var(--scale-factor));
+    border-radius: calc(0.375rem * var(--scale-factor));
+    min-height: calc(44px * var(--scale-factor));
+    line-height: calc(1.5 * var(--scale-factor));
   }
   
-  .global-font-medium {
-    --global-scale: 1;
+  .global-font-medium,
+  .global-font-medium * {
+    font-size: calc(1rem * var(--scale-factor));
+    padding: calc(0.5rem * var(--scale-factor)) calc(1rem * var(--scale-factor));
+    margin: calc(0.25rem * var(--scale-factor));
+    border-radius: calc(0.375rem * var(--scale-factor));
+    min-height: calc(44px * var(--scale-factor));
+    line-height: calc(1.5 * var(--scale-factor));
   }
   
-  .global-font-large {
-    --global-scale: 1.2;
-  }
-  
-  .global-font-small *,
-  .global-font-small button,
-  .global-font-small input,
-  .global-font-small textarea,
-  .global-font-small [role="button"] {
-    font-size: calc(1rem * var(--global-scale)) !important;
-    padding: calc(0.5rem * var(--global-scale)) calc(1rem * var(--global-scale)) !important;
-    min-height: calc(44px * var(--global-scale)) !important;
-    border-radius: calc(0.375rem * var(--global-scale)) !important;
-  }
-  
-  .global-font-medium *,
-  .global-font-medium button,
-  .global-font-medium input,
-  .global-font-medium textarea,
-  .global-font-medium [role="button"] {
-    font-size: calc(1rem * var(--global-scale)) !important;
-    padding: calc(0.5rem * var(--global-scale)) calc(1rem * var(--global-scale)) !important;
-    min-height: calc(44px * var(--global-scale)) !important;
-    border-radius: calc(0.375rem * var(--global-scale)) !important;
-  }
-  
-  .global-font-large *,
-  .global-font-large button,
-  .global-font-large input,
-  .global-font-large textarea,
-  .global-font-large [role="button"] {
-    font-size: calc(1rem * var(--global-scale)) !important;
-    padding: calc(0.5rem * var(--global-scale)) calc(1rem * var(--global-scale)) !important;
-    min-height: calc(44px * var(--global-scale)) !important;
-    border-radius: calc(0.375rem * var(--global-scale)) !important;
+  .global-font-large,
+  .global-font-large * {
+    font-size: calc(1rem * var(--scale-factor));
+    padding: calc(0.5rem * var(--scale-factor)) calc(1rem * var(--scale-factor));
+    margin: calc(0.25rem * var(--scale-factor));
+    border-radius: calc(0.375rem * var(--scale-factor));
+    min-height: calc(44px * var(--scale-factor));
+    line-height: calc(1.5 * var(--scale-factor));
   }
 
-  /* Исключения для мелких элементов */
+  /* Headers scale differently */
+  .global-font-small h1,
+  .global-font-medium h1,
+  .global-font-large h1 {
+    font-size: calc(2rem * var(--scale-factor));
+  }
+  
+  .global-font-small h2,
+  .global-font-medium h2,
+  .global-font-large h2 {
+    font-size: calc(1.5rem * var(--scale-factor));
+  }
+  
+  .global-font-small h3,
+  .global-font-medium h3,
+  .global-font-large h3 {
+    font-size: calc(1.25rem * var(--scale-factor));
+  }
+
+  /* Icons scale with interface */
+  .global-font-small svg,
+  .global-font-medium svg,
+  .global-font-large svg {
+    width: calc(1rem * var(--scale-factor));
+    height: calc(1rem * var(--scale-factor));
+  }
+
+  /* Special handling for certain elements */
   .global-font-small .scale-50,
   .global-font-medium .scale-50,
   .global-font-large .scale-50 {
-    transform: scale(0.5) !important;
+    transform: scale(calc(0.5 * var(--scale-factor))) !important;
   }
 
   /* Drag and drop styles */

@@ -280,6 +280,19 @@ const NoteCard: React.FC<NoteCardProps> = ({
 
   const availableTags = allTags.filter(tag => !tempTags.includes(tag));
 
+  // QR Code content - full content with lists
+  const getQRContent = () => {
+    let content = note.title || 'Без названия';
+    if (note.type === 'list' && note.listItems) {
+      content += '\n\n' + note.listItems.map(item => 
+        `${item.completed ? '✓' : '○'} ${item.text}`
+      ).join('\n');
+    } else {
+      content += '\n\n' + note.content;
+    }
+    return content;
+  };
+
   return (
     <>
       <div 
@@ -520,33 +533,10 @@ const NoteCard: React.FC<NoteCardProps> = ({
           )}
         </div>
 
-        {/* Footer with colored line */}
-        <div className={`px-3 pb-2 pt-2 border-t-4 ${
-          note.type === 'list' ? 'border-t-green-500 bg-green-50 dark:bg-green-900/20' : 'border-t-blue-500 bg-blue-50 dark:bg-blue-900/20'
-        }`}>
-          <div className="flex items-center gap-2 text-xs">
-            <div className={`p-1 rounded ${
-              note.type === 'list' ? 'bg-green-500' : 'bg-blue-500'
-            }`}>
-              {note.type === 'list' ? (
-                <Check size={14} className="text-white" />
-              ) : (
-                <Copy size={14} className="text-white" />
-              )}
-            </div>
-            <span className={`font-medium ${
-              note.type === 'list' ? 'text-green-700 dark:text-green-300' : 'text-blue-700 dark:text-blue-300'
-            }`}>
-              {note.type === 'list' ? '📋 Список' : '📝 Заметка'}
-            </span>
-            <span className="text-muted-foreground">•</span>
-            <span className={`${
-              note.type === 'list' ? 'text-green-600 dark:text-green-400' : 'text-blue-600 dark:text-blue-400'
-            }`}>
-              Создано: {new Date(note.createdAt).toLocaleString('ru')}
-            </span>
-          </div>
-        </div>
+        {/* Simple colored bottom strip */}
+        <div className={`h-2 rounded-b-lg ${
+          note.type === 'list' ? 'bg-green-500' : 'bg-blue-500'
+        }`}></div>
       </div>
 
       {/* QR Code Dialog */}
@@ -557,10 +547,7 @@ const NoteCard: React.FC<NoteCardProps> = ({
           </DialogHeader>
           <div className="flex flex-col items-center space-y-4">
             <img 
-              src={generateQRCodeURL(note.type === 'list' && note.listItems 
-                ? `${note.title}\n\n${note.listItems.map(item => `${item.completed ? '✓' : '○'} ${item.text}`).join('\n')}`
-                : `${note.title}\n\n${note.content}`
-              )}
+              src={generateQRCodeURL(getQRContent())}
               alt="QR Code"
               className="border rounded"
             />
