@@ -97,7 +97,7 @@
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    overflow-x: hidden; /* Предотвращаем горизонтальный скролл */
+    overflow-x: hidden;
   }
 
   /* Enhanced dark theme text contrast */
@@ -165,54 +165,68 @@
   /* Mobile optimizations */
   @media (max-width: 768px) {
     body {
-      font-size: 16px; /* Prevents zoom on iOS */
+      font-size: 16px;
     }
     
     input, textarea, select {
-      font-size: 16px; /* Prevents zoom on iOS */
+      font-size: 16px;
     }
     
-    /* Контейнеры должны помещаться в экран */
+    /* Контейнеры с правильным центрированием */
     .container {
+      width: 100%;
       max-width: 100vw;
-      padding-left: 0.5rem;
-      padding-right: 0.5rem;
+      margin: 0 auto;
+      padding: 0 1rem;
       box-sizing: border-box;
     }
     
-    /* Заголовок должен помещаться */
+    /* Заголовок с правильными отступами */
     header {
-      padding-left: 0.5rem;
-      padding-right: 0.5rem;
+      width: 100%;
+      padding: 0 1rem;
+      box-sizing: border-box;
     }
     
-    /* Сетка заметок адаптивная */
-    .grid {
-      grid-template-columns: 1fr !important;
-      gap: 0.75rem;
-      padding: 0.5rem;
+    /* Главный контейнер страницы */
+    main {
+      width: 100%;
+      padding: 0;
+      margin: 0;
     }
     
-    /* Карточки заметок не должны выходить за границы */
+    /* Сетка заметок по центру с отступами */
+    .notes-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      padding: 1rem;
+      width: 100%;
+      max-width: 100vw;
+      margin: 0 auto;
+      box-sizing: border-box;
+    }
+    
+    /* Карточки заметок */
     .note-card {
+      width: 100%;
       max-width: 100%;
+      margin: 0;
       box-sizing: border-box;
     }
     
     /* Горизонтальная ориентация на мобильных */
     @media (orientation: landscape) {
       .container {
-        max-width: 100vw;
-        padding: 0 0.5rem;
+        padding: 0 1rem;
       }
       
-      /* Сетка заметок для горизонтального режима */
-      .grid {
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
-        gap: 0.75rem;
+      .notes-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1rem;
+        padding: 1rem;
       }
       
-      /* Уменьшаем отступы для экономии места */
       .py-6 {
         padding-top: 1rem;
         padding-bottom: 1rem;
@@ -254,49 +268,30 @@
   }
 
   /* ИСПРАВЛЕННАЯ система глобального масштабирования */
-  html.global-font-small {
-    font-size: 14px;
+  html.global-font-small * {
+    font-size: 0.875rem !important;
   }
   
-  html.global-font-medium {
-    font-size: 16px;
+  html.global-font-medium * {
+    font-size: 1rem !important;
   }
   
-  html.global-font-large {
-    font-size: 18px;
-  }
-
-  /* Применяем масштабирование ко всем текстовым элементам */
-  .global-font-small h1, .global-font-small h2, .global-font-small h3, 
-  .global-font-small p, .global-font-small span, .global-font-small div,
-  .global-font-small button, .global-font-small input, .global-font-small textarea {
-    font-size: 0.875rem;
-  }
-
-  .global-font-medium h1, .global-font-medium h2, .global-font-medium h3,
-  .global-font-medium p, .global-font-medium span, .global-font-medium div,
-  .global-font-medium button, .global-font-medium input, .global-font-medium textarea {
-    font-size: 1rem;
-  }
-
-  .global-font-large h1, .global-font-large h2, .global-font-large h3,
-  .global-font-large p, .global-font-large span, .global-font-large div,
-  .global-font-large button, .global-font-large input, .global-font-large textarea {
-    font-size: 1.125rem;
+  html.global-font-large * {
+    font-size: 1.125rem !important;
   }
 
   /* Заголовки должны быть пропорционально больше */
-  .global-font-small h1 { font-size: 1.5rem; }
-  .global-font-small h2 { font-size: 1.25rem; }
-  .global-font-small h3 { font-size: 1.125rem; }
+  html.global-font-small h1 { font-size: 1.5rem !important; }
+  html.global-font-small h2 { font-size: 1.25rem !important; }
+  html.global-font-small h3 { font-size: 1.125rem !important; }
 
-  .global-font-medium h1 { font-size: 1.75rem; }
-  .global-font-medium h2 { font-size: 1.5rem; }
-  .global-font-medium h3 { font-size: 1.25rem; }
+  html.global-font-medium h1 { font-size: 1.75rem !important; }
+  html.global-font-medium h2 { font-size: 1.5rem !important; }
+  html.global-font-medium h3 { font-size: 1.25rem !important; }
 
-  .global-font-large h1 { font-size: 2rem; }
-  .global-font-large h2 { font-size: 1.75rem; }
-  .global-font-large h3 { font-size: 1.5rem; }
+  html.global-font-large h1 { font-size: 2rem !important; }
+  html.global-font-large h2 { font-size: 1.75rem !important; }
+  html.global-font-large h3 { font-size: 1.5rem !important; }
 
   /* Drag and drop styles */
   .cursor-move {
@@ -317,13 +312,11 @@
       transform: none !important;
     }
     
-    /* Принудительное позиционирование подменю слева */
     [data-side="left"] {
       --radix-dropdown-menu-content-transform-origin: right center;
     }
   }
   
-  /* Фиксация layout при открытии меню */
   .container {
     transition: none !important;
   }
