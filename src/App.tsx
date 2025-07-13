@@ -23,8 +23,12 @@ function App() {
       document.documentElement.classList.remove('dark');
     }
 
-    // Apply global font size scaling to document body
-    document.body.className = document.body.className.replace(/global-font-\w+/, '');
+    // Apply global font size scaling to html element instead of body
+    document.documentElement.className = document.documentElement.className.replace(/global-font-\w+/g, '');
+    document.documentElement.classList.add(`global-font-${settings.globalFontSize}`);
+    
+    // Also apply to body for backward compatibility
+    document.body.className = document.body.className.replace(/global-font-\w+/g, '');
     document.body.classList.add(`global-font-${settings.globalFontSize}`);
   }, [settings.theme, settings.globalFontSize]);
 
