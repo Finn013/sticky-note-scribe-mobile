@@ -214,7 +214,7 @@ const Index = () => {
         onDeleteSelected={handleDeleteSelected}
       />
       
-      <main className="container mx-auto px-4 py-6 max-w-4xl">
+      <main className="container mx-auto px-0 py-6 max-w-4xl">
         {selectedCount > 0 && (
           <div className="mb-4 p-3 bg-primary/10 rounded-lg">
             <p className="text-sm text-primary font-medium">

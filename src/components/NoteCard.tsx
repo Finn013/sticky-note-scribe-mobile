@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Copy, Send, QrCode, Delete, Menu, Plus, X, Tag, Check, GripVertical, ChevronDown } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { useDebounce } from '../hooks/useDebounce';
+import { Button } from './ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -92,7 +93,22 @@ const NoteCard: React.FC<NoteCardProps> = ({
     });
   };
 
-  const handleSave = () => {
+  const debouncedTitle = useDebounce(tempTitle, 500);
+  const debouncedContent = useDebounce(tempContent, 500);
+  const debouncedListItems = useDebounce(tempListItems, 500);
+
+  useEffect(() => {
+    if (isMounted.current && isEditing) {
+      handleSave(false); // Auto-save without exiting edit mode
+    }
+  }, [debouncedTitle, debouncedContent, debouncedListItems]);
+
+  const isMounted = useRef(false);
+  useEffect(() => {
+    isMounted.current = true;
+  }, []);
+
+  const handleSave = (exitEditing = true) => {
     const updatedNote = {
       ...note,
       title: tempTitle || 'Без названия',
@@ -102,7 +118,9 @@ const NoteCard: React.FC<NoteCardProps> = ({
       updatedAt: new Date().toISOString(),
     };
     onUpdate(updatedNote);
-    setIsEditing(false);
+    if (exitEditing) {
+      setIsEditing(false);
+    }
   };
 
   const handleCancel = () => {
@@ -517,7 +535,7 @@ const NoteCard: React.FC<NoteCardProps> = ({
                 />
               )}
               <div className="flex gap-2">
-                <Button onClick={handleSave} size="sm">
+                <Button onClick={() => handleSave(true)} size="sm">
                   Сохранить
                 </Button>
                 <Button onClick={handleCancel} variant="outline" size="sm">
